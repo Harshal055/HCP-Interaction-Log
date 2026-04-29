@@ -11,7 +11,7 @@ if (!apiKey) {
 
 export const groq = apiKey ? new Groq({ apiKey }) : null;
 
-export const GROQ_MODEL = process.env["GROQ_MODEL"] ?? "gemma2-9b-it";
+export const GROQ_MODEL = process.env["GROQ_MODEL"] ?? "llama-3.1-8b-instant";
 
 export function isGroqEnabled(): boolean {
   return groq !== null;
@@ -36,18 +36,26 @@ export async function callGroq({
     throw new Error("GROQ_API_KEY is not configured");
   }
 
-  const response = await groq.chat.completions.create({
-    model: GROQ_MODEL,
-    temperature,
-    max_tokens: maxTokens,
-    ...(jsonMode ? { response_format: { type: "json_object" } } : {}),
-    messages: [
-      { role: "system", content: system },
-      { role: "user", content: user },
-    ],
-  });
+  try {
+    const response = await groq.chat.completions.create({
+      model: GROQ_MODEL,
+      temperature,
+      max_tokens: maxTokens,
+      ...(jsonMode ? { response_format: { type: "json_object" } } : {}),
+      messages: [
+        { role: "system", content: system },
+        { role: "user", content: user },
+      ],
+    });
 
-  return response.choices[0]?.message?.content ?? "";
+    return response.choices[0]?.message?.content ?? "";
+  } catch (err) {
+    logger.error(
+      { err, model: GROQ_MODEL },
+      "Groq chat completion failed",
+    );
+    throw err;
+  }
 }
 
 /**
