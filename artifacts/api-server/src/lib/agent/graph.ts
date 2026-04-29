@@ -139,6 +139,7 @@ async function nodeApplyEdit(state: AgentState): Promise<AgentState> {
   const { updated, changeSummary } = await editInteractionTool({
     existing: base,
     editRequest: state.userInput,
+    log: state.log,
   });
   state.draft = updated;
   state.changeSummary = changeSummary;
