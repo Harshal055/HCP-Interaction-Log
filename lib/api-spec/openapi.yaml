@@ -3,13 +3,23 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: AI-first CRM HCP module API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: hcps
+    description: Healthcare professionals
+  - name: interactions
+    description: HCP interactions
+  - name: materials
+    description: Materials catalog
+  - name: agent
+    description: AI agent (LangGraph-style orchestrator powered by Groq)
+  - name: dashboard
+    description: Dashboard summaries
 paths:
   /healthz:
     get:
@@ -24,6 +34,258 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /hcps:
+    get:
+      operationId: listHcps
+      tags: [hcps]
+      summary: List HCPs
+      parameters:
+        - in: query
+          name: q
+          required: false
+          schema:
+            type: string
+          description: Free-text search across name, specialty, institution, territory
+      responses:
+        "200":
+          description: HCP list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Hcp"
+
+  /hcps/{id}:
+    get:
+      operationId: getHcp
+      tags: [hcps]
+      summary: Get an HCP
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: HCP
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HcpDetail"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /interactions:
+    get:
+      operationId: listInteractions
+      tags: [interactions]
+      summary: List interactions
+      parameters:
+        - in: query
+          name: hcpId
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            default: 50
+      responses:
+        "200":
+          description: Interactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Interaction"
+    post:
+      operationId: createInteraction
+      tags: [interactions]
+      summary: Save a new interaction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InteractionInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Interaction"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /interactions/{id}:
+    get:
+      operationId: getInteraction
+      tags: [interactions]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Interaction
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Interaction"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      operationId: updateInteraction
+      tags: [interactions]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InteractionInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Interaction"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteInteraction
+      tags: [interactions]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+
+  /interactions/{id}/audit:
+    get:
+      operationId: listInteractionAudit
+      tags: [interactions]
+      summary: List audit log entries for an interaction
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Audit entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InteractionAudit"
+
+  /materials:
+    get:
+      operationId: listMaterials
+      tags: [materials]
+      responses:
+        "200":
+          description: Materials catalog
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MaterialsCatalog"
+
+  /agent/chat:
+    post:
+      operationId: agentChat
+      tags: [agent]
+      summary: Run the LangGraph-style agent (extract / edit / search / recommend)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AgentChatRequest"
+      responses:
+        "200":
+          description: Agent response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AgentResult"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /agent/draft:
+    post:
+      operationId: agentDraftFromForm
+      tags: [agent]
+      summary: Generate AI summary + follow-up suggestions from form data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InteractionInput"
+      responses:
+        "200":
+          description: Enriched draft
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AgentDraftResponse"
+
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Aggregate stats for the field rep
+      responses:
+        "200":
+          description: Summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
 components:
   schemas:
     HealthStatus:
@@ -31,6 +293,351 @@ components:
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
 
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required: [error]
+
+    Sentiment:
+      type: string
+      enum: [positive, neutral, negative]
+
+    SourceMode:
+      type: string
+      enum: [form, chat, hybrid, edit]
+
+    Hcp:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        specialty:
+          type: ["string", "null"]
+        institution:
+          type: ["string", "null"]
+        territory:
+          type: ["string", "null"]
+        email:
+          type: ["string", "null"]
+        phone:
+          type: ["string", "null"]
+        lastInteractionAt:
+          type: ["string", "null"]
+          format: date-time
+        interactionCount:
+          type: integer
+      required: [id, name, interactionCount]
+
+    HcpDetail:
+      allOf:
+        - $ref: "#/components/schemas/Hcp"
+        - type: object
+          properties:
+            recentInteractions:
+              type: array
+              items:
+                $ref: "#/components/schemas/Interaction"
+          required: [recentInteractions]
+
+    Interaction:
+      type: object
+      properties:
+        id:
+          type: string
+        hcpId:
+          type: ["string", "null"]
+        hcpName:
+          type: ["string", "null"]
+        interactionType:
+          type: ["string", "null"]
+        interactionDate:
+          type: ["string", "null"]
+        interactionTime:
+          type: ["string", "null"]
+        attendees:
+          type: array
+          items:
+            type: string
+        topicsDiscussed:
+          type: ["string", "null"]
+        materialsShared:
+          type: array
+          items:
+            type: string
+        samplesDistributed:
+          type: array
+          items:
+            type: string
+        sentiment:
+          oneOf:
+            - $ref: "#/components/schemas/Sentiment"
+            - type: "null"
+        outcomes:
+          type: ["string", "null"]
+        followUpActions:
+          type: ["string", "null"]
+        aiSummary:
+          type: ["string", "null"]
+        sourceMode:
+          oneOf:
+            - $ref: "#/components/schemas/SourceMode"
+            - type: "null"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - attendees
+        - materialsShared
+        - samplesDistributed
+        - createdAt
+        - updatedAt
+
+    InteractionInput:
+      type: object
+      properties:
+        hcpId:
+          type: ["string", "null"]
+        hcpName:
+          type: ["string", "null"]
+        interactionType:
+          type: ["string", "null"]
+        interactionDate:
+          type: ["string", "null"]
+        interactionTime:
+          type: ["string", "null"]
+        attendees:
+          type: array
+          items:
+            type: string
+        topicsDiscussed:
+          type: ["string", "null"]
+        materialsShared:
+          type: array
+          items:
+            type: string
+        samplesDistributed:
+          type: array
+          items:
+            type: string
+        sentiment:
+          oneOf:
+            - $ref: "#/components/schemas/Sentiment"
+            - type: "null"
+        outcomes:
+          type: ["string", "null"]
+        followUpActions:
+          type: ["string", "null"]
+        aiSummary:
+          type: ["string", "null"]
+        sourceMode:
+          oneOf:
+            - $ref: "#/components/schemas/SourceMode"
+            - type: "null"
+
+    InteractionAudit:
+      type: object
+      properties:
+        id:
+          type: string
+        interactionId:
+          type: string
+        actionType:
+          type: string
+        changeSummary:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, interactionId, actionType, createdAt]
+
+    MaterialsCatalog:
+      type: object
+      properties:
+        materials:
+          type: array
+          items:
+            type: string
+        samples:
+          type: array
+          items:
+            type: string
+      required: [materials, samples]
+
+    AgentChatRequest:
+      type: object
+      properties:
+        message:
+          type: string
+        formData:
+          oneOf:
+            - $ref: "#/components/schemas/InteractionInput"
+            - type: "null"
+        existingInteractionId:
+          type: ["string", "null"]
+        mode:
+          type: string
+          enum: [auto, create, edit, search, recommend]
+      required: [message]
+
+    HcpSearchHit:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        specialty:
+          type: ["string", "null"]
+        institution:
+          type: ["string", "null"]
+      required: [id, name]
+
+    FollowUpSuggestion:
+      type: object
+      properties:
+        action:
+          type: string
+        rationale:
+          type: ["string", "null"]
+        dueInDays:
+          type: ["integer", "null"]
+      required: [action]
+
+    AgentResult:
+      type: object
+      properties:
+        mode:
+          type: string
+          description: Resolved mode after classification (create / edit / search / recommend)
+        draft:
+          oneOf:
+            - $ref: "#/components/schemas/InteractionInput"
+            - type: "null"
+        existingInteraction:
+          oneOf:
+            - $ref: "#/components/schemas/Interaction"
+            - type: "null"
+        missingFields:
+          type: array
+          items:
+            type: string
+        followUpSuggestions:
+          type: array
+          items:
+            $ref: "#/components/schemas/FollowUpSuggestion"
+        hcpMatches:
+          type: array
+          items:
+            $ref: "#/components/schemas/HcpSearchHit"
+        summary:
+          type: ["string", "null"]
+        toolTrace:
+          type: array
+          items:
+            type: string
+        assistantMessage:
+          type: string
+        changeSummary:
+          type: ["string", "null"]
+      required:
+        - mode
+        - missingFields
+        - followUpSuggestions
+        - hcpMatches
+        - toolTrace
+        - assistantMessage
+
+    AgentDraftResponse:
+      type: object
+      properties:
+        draft:
+          $ref: "#/components/schemas/InteractionInput"
+        missingFields:
+          type: array
+          items:
+            type: string
+        followUpSuggestions:
+          type: array
+          items:
+            $ref: "#/components/schemas/FollowUpSuggestion"
+        summary:
+          type: string
+        toolTrace:
+          type: array
+          items:
+            type: string
+      required:
+        - draft
+        - missingFields
+        - followUpSuggestions
+        - summary
+        - toolTrace
+
+    SentimentBreakdown:
+      type: object
+      properties:
+        positive:
+          type: integer
+        neutral:
+          type: integer
+        negative:
+          type: integer
+      required: [positive, neutral, negative]
+
+    RecentActivityItem:
+      type: object
+      properties:
+        id:
+          type: string
+        hcpName:
+          type: ["string", "null"]
+        summary:
+          type: ["string", "null"]
+        sentiment:
+          oneOf:
+            - $ref: "#/components/schemas/Sentiment"
+            - type: "null"
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, createdAt]
+
+    DashboardSummary:
+      type: object
+      properties:
+        totalInteractions:
+          type: integer
+        weekInteractions:
+          type: integer
+        totalHcps:
+          type: integer
+        pendingFollowUps:
+          type: integer
+        sentimentBreakdown:
+          $ref: "#/components/schemas/SentimentBreakdown"
+        topHcps:
+          type: array
+          items:
+            $ref: "#/components/schemas/Hcp"
+        recentActivity:
+          type: array
+          items:
+            $ref: "#/components/schemas/RecentActivityItem"
+      required:
+        - totalInteractions
+        - weekInteractions
+        - totalHcps
+        - pendingFollowUps
+        - sentimentBreakdown
+        - topHcps
+        - recentActivity
