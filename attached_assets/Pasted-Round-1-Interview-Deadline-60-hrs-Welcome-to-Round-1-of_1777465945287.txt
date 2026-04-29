@@ -1,0 +1,167 @@
+Round 1 Interview	(Deadline: 60 hrs)
+Welcome to Round 1 of the Assignment Round
+The current assignment consists of two tasks:
+Technical & Development Task(Task 1)
+
+
+Non-Technical Task (QMS Module)(Task 2)
+
+
+You are requested to carefully read through the provided document and watch the video instructions for Task 1 (video is applicable only for Task 1) in full before you begin implementing your solutions.
+Once you have completed both tasks, please use the submission URL at the end of the Document, which contains the Google Form link, and fill in all the required fields.	
+			
+ Task 1: AI-First CRM HCP Module – LogInteractionScreen(Technical)
+Note: If langgraph and LLM are not used, the below task will not be accepted.
+Objective: Conceptualize and outline the key components of an AI-first Customer Relationship Management (CRM) system, specifically focusing on the Healthcare Professional (HCP) module. You should approach this task with the mindset of a life science expert designing a tool for field representatives.
+Core Requirements & Tech Stack:
+Functionality: Design the "Log Interaction Screen." This screen must be offer users the flexibility to log interactions with HCPs via either a structured form or a conversational chat interface.
+Frontend: React UI with Redux for state management.
+Backend: Python with FastAPI.
+AI Agent Framework: LangGraph.
+LLMs: Utilize Groq(https://console.groq.com/docs/models), specifically the gemma2-9b-it model (assume you will create a new API token for this). You may also consider llama-3.3-70b-versatile for context.
+Database: MySQL/Postgres SQL
+Font: Google Inter.
+You may use Gemini 2.5 Pro (1-month free trial) or ChatGPT 5.0 for all coding and research, with zero human-written code.
+
+
+`
+Video URL:  Instructions(Task 1).mp4
+or use the URL below: https://drive.google.com/file/d/1njXfNIWa465MfMYwY7YZvY_hGd3fyZX2/view?usp=drive_link
+
+ LangGraph AI Agent & Tools: 
+Describe the role of the LangGraph agent in managing HCP interactions.
+Define a minimum of five (5) specific "tools" that this LangGraph agent would use for sales-related activities. Two tools must be: 
+Log Interaction: Detail how this tool captures interaction data (potentially using the LLM for summarization, entity extraction, etc.).
+Edit Interaction: How this tool allows modification of logged data.
+
+
+
+
+Output Deliverables (Task 1)
+1. GitHub Submission
+Upload both frontend and backend code to a single GitHub repository.
+
+
+Ensure the repository contains a clear and detailed README.md file.
+
+
+Submit the GitHub URL using the submission link provided at the end of this document.
+
+
+2. Video Recording
+Create a 10–15 minute video that includes:
+A walkthrough of your frontend URL.
+
+
+Demonstration of all 5 LangGraph tools functioning correctly.
+
+
+A clear explanation of your code flow and architecture.
+
+
+A summary of what you personally understood from Task 1.
+
+Task 2: Understanding QMS Modules in Supply Chain OS (Life Sciences)
+(Non-technical)
+Note: You will be evaluated on your understanding of the QMS module in Life science, only a PPT or a document will not be sufficient 
+Objective: This task evaluates your understanding, learning ability, and clarity of explanation about real-world business workflows in the Life Sciences Supply Chain domain.
+We want to see how effectively you can analyze, structure, and communicate what you learn — a key skill for developers who build systems they truly understand.
+
+🧩 Task Context
+You will explore the Quality Management System (QMS) module in our Supply Chain OS platform.
+ The system focuses on APIs (Active Pharmaceutical Ingredients) and FDF used by Life Science manufacturers.
+The QMS module includes:
+In-Process Quality
+
+
+Deviation Management
+
+
+CAPA (Corrective and Preventive Actions)
+
+
+In-Product Quality
+
+
+Product Complaints
+
+
+Recall Management
+
+
+Adverse Event Reporting
+
+
+QMS Management
+
+
+Supplier Management
+
+
+
+🧠 Your Task
+You are required to:
+Explore the above QMS modules.
+
+
+Explain the end-to-end flow for each module, covering how it works and its purpose.
+
+
+Take:
+
+
+Example related to API, and
+
+
+Examples related to Raw Materials.
+
+
+Explain roles in SMEs (Small & Medium Enterprises), such as explain as per their perspective :
+
+
+Quality Executive / QA Officer
+
+
+Production Manager
+
+
+Support your explanation using flowcharts or simple visuals, or a PPT(hand-drawn or digital, not an AI-generated one).
+
+📌 Deliverables (Submit Separately)
+You must submit items separately using the Google Form link provided at the end of the Document.
+1. Video Recording
+Duration: 10–15 minutes
+
+
+Format: MP4 or MOV
+
+
+File name: YourName_QMS_Assignment_Video
+
+
+🎥 Video Recording Instructions (Mandatory)
+1. Duration
+Minimum: 10 minutes
+
+
+Maximum: 25 minutes
+
+
+⚠️ Videos shorter than 10 minutes will not be accepted.
+
+
+
+2. Recording Format
+You may use a phone or a laptop.
+
+
+Ensure clear audio and that your face is visible throughout the recording.
+
+📤 Submission Link
+
+Submit both files separately using this Google Form:
+
+https://forms.gle/g76jGd47P8T86gQ69
+(Please make sure to upload both the videos and the required files in their respective fields.
+ Incomplete submissions will not be reviewed.)
+
